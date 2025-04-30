@@ -1,18 +1,20 @@
-name: AQI Pipeline Automation
+name: Run Feature Engineering
 
 on:
+  workflow_dispatch:
   schedule:
-    - cron: "0 3 * * *"  # Runs daily at 3 AM UTC
-  workflow_dispatch:     # Allows manual trigger
+    - cron: '0 6 * * *'  # runs daily at 6 AM UTC
 
 jobs:
-  build:
+  feature-engineering:
     runs-on: ubuntu-latest
+
     env:
-      HOPS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+      HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
       OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -21,10 +23,9 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Run feature engineering
+      - name: Run feature engineering script
         run: python create_features.py
-
-      - name: Train and predict
-        run: python model_train.py
