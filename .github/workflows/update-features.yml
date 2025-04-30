@@ -29,6 +29,7 @@ jobs:
     - name: Run create_features.py
       env:
         HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
       run: |
         python create_features.py
       continue-on-error: false

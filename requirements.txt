@@ -1,5 +1,6 @@
-pandas 
-numpy 
-hopsworks 
+pandas
 requests
+hopsworks[python]
+plotly
+numpy
 pyarrow
