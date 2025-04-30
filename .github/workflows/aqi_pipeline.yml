@@ -8,23 +8,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    env:
+      HOPS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+      OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-    - name: Run feature engineering
-      run: python create_features.py
+      - name: Run feature engineering
+        run: python create_features.py
 
-    - name: Train and predict
-      run: python model_train.py
+      - name: Train and predict
+        run: python model_train.py
