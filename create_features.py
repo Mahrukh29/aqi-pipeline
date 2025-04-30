@@ -15,7 +15,7 @@ OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
 # Constants
 FEATURE_GROUP_NAME = "pm10_features"
-DATA_PATH = "aqi_dataset.csv"  # Use relative path so it works in GitHub Actions
+DATA_PATH = 'AQI Prediction Dataset.csv'
 
 def fetch_new_data(existing_data):
     try:
