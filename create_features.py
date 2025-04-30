@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # API keys from GitHub Actions secrets
-HOPSWORKS_API_KEY = os.getenv("HOPS_API_KEY")
+HOPSWORKS_API_KEY = os.getenv("HOPSWORKS_API_KEY")
 OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
 # Constants
@@ -126,9 +126,9 @@ def create_features():
         data = data.sort_values('datetime').reset_index(drop=True)
 
         # Drop unnecessary features
-        data.drop(columns=[
-            'is_weekend', 'had_rain', 'heavy_rain', 'wind_category',
-            'wind_pm_impact', 'wind_rain_interaction'
+        data.drop(columns=[ 
+            'is_weekend', 'had_rain', 'heavy_rain', 'wind_category', 
+            'wind_pm_impact', 'wind_rain_interaction' 
         ], inplace=True, errors='ignore')
 
         # Clean values
@@ -163,7 +163,7 @@ def create_features():
 
         # Environmental interaction features
         data['temperature'] = data['temperature'].fillna(data['temperature'].mean())
-        data['humidity'] = data['humidity'].fillna(data['humidity'].mean()).round()
+        data['humidity'] = data['humidity'].fillna(data['humidity'].mean()).round().astype('int64')  # Cast humidity to int64
         data['wind_speed'] = data['wind_speed'].fillna(data['wind_speed'].mean())
         data['precipitation'] = data['precipitation'].fillna(data['precipitation'].mean())
         data['dew_point'] = data['temperature'] - ((100 - data['humidity']) / 5)
