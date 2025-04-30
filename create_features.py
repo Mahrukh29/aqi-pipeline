@@ -56,6 +56,13 @@ def load_existing_data():
         if DATASET_PATH.exists():
             df = pd.read_csv(DATASET_PATH, parse_dates=['datetime'], date_format='%d/%m/%Y %H:%M', dayfirst=True)
             logger.info(f"Loaded {len(df)} rows from dataset.")
+            # Validate datetime column
+            if not pd.api.types.is_datetime64_any_dtype(df['datetime']):
+                logger.error("Datetime column contains non-datetime values. Attempting to fix...")
+                df['datetime'] = pd.to_datetime(df['datetime'], format='%d/%m/%Y %H:%M', errors='coerce', dayfirst=True)
+                if df['datetime'].isna().any():
+                    logger.error(f"Found {df['datetime'].isna().sum()} rows with invalid datetime values. Dropping these rows.")
+                    df = df.dropna(subset=['datetime'])
             return df
         else:
             logger.info("No existing dataset found. Creating new dataset.")
@@ -94,12 +101,19 @@ def create_features():
     # Determine the date range for fetching new data
     if not existing_df.empty:
         last_date = existing_df['datetime'].max()
+        logger.info(f"Last date in dataset: {last_date}, type: {type(last_date)}")
+        if pd.isna(last_date):
+            logger.error("Last date is NaT. Check dataset for invalid datetime values.")
+            return
         start_date = int((last_date + timedelta(hours=1)).timestamp())
+        logger.info(f"Fetching new data from {last_date + timedelta(hours=1)} (timestamp: {start_date})")
     else:
         # If no data exists, fetch the last 30 days
         start_date = int((datetime.now() - timedelta(days=30)).timestamp())
+        logger.info(f"No existing data. Fetching last 30 days from timestamp: {start_date}")
     
     end_date = int(datetime.now().timestamp())
+    logger.info(f"Fetching data up to timestamp: {end_date}")
     
     # Fetch new data from OpenWeather API
     new_data = fetch_openweather_data(start_date, end_date)
