@@ -2,4 +2,4 @@ pandas
 numpy 
 hopsworks 
 requests
-pyarrow==<version>
+pyarrow
